@@ -1,0 +1,97 @@
+//TODO: get this dependency from the global culture sass files
+$local__color3: #f8a01e; 
+$global__light-grey2: #e0dfde;
+
+@mixin transition($transition-values...) {
+	-webkit-transition: $transition-values;
+	-moz-transition: $transition-values;
+	-ms-transition: $transition-values;
+	-o-transition: $transition-values;
+	transition: $transition-values;
+}
+@mixin rem($property, $size_in_px, $important:null) {
+	$shorthand_in_px: null;
+	$shorthand_in_rem: null;
+
+	@each $size in $size_in_px {
+		@if $size==0 {
+			$shorthand_in_px: join($shorthand_in_px, $size);
+			$shorthand_in_rem: join($shorthand_in_rem, ($size/10));
+		}
+		@else {
+			$shorthand_in_px: join($shorthand_in_px, ($size) + px);
+			$shorthand_in_rem: join($shorthand_in_rem, ($size/10) + rem);
+		}
+	}
+	$old-ie: false !default;
+
+	@if $old-ie {
+		#{$property}: $shorthand_in_px $important;
+	}
+	@else {
+		#{$property}: $shorthand_in_rem $important;
+	}
+}
+// end-global dependencies
+
+$loading-bar-size: 22!default;
+$loading-bar-color: $local__color3!default;
+$loading-bar-stripes-size: $loading-bar-size*2!default;
+
+.loading-bar {
+	width: auto;
+	@include rem(margin-top,5);
+}
+
+.loading-bar__bar {
+	display: block;
+	background-color: $loading-bar-color;
+	@include rem(border-radius,3);
+	@include rem(height,$loading-bar-size);
+	@include transition(width 1s ease);
+	position: relative;
+	overflow: hidden;
+}
+
+.loading-bar__bg {
+	background-color: $global__light-grey2;
+	@include rem(border-radius,3);
+	@include rem(margin-bottom,10);
+	width: 100%;
+	display: inline-block;
+}
+
+.loading-bar--small {
+	.loading-bar__bar {
+		@include rem(height,$loading-bar-size/2.5);
+	}
+}
+
+.loading-bar--stripes {
+	.loading-bar__bar:after {
+		@extend %loading-bar__stripes;
+	}
+}
+
+%loading-bar__stripes {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: repeating-linear-gradient(-45deg,transparent,transparent 25%,rgba(255, 255, 255, .15) 25%,rgba(255, 255, 255, .15) 50%);
+	z-index: 1;
+	@include rem(background-size, $loading-bar-stripes-size $loading-bar-stripes-size);
+	animation: movestripes 1s linear infinite;
+	overflow: hidden;
+}
+
+@keyframes movestripes {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    @include rem(background-position, $loading-bar-stripes-size $loading-bar-stripes-size);
+  }
+}
